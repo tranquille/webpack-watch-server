@@ -53,7 +53,14 @@ function invoke(env) {
         serverStartCount++;
         clearConsole();
         logInfo(`Server start ${serverStartCount}…`);
-        serverProcess = spawn("node", [[outputPath, filename].filter(p => p).join("/")]);
+        const opts = Array.isArray(args.opt) ? args.opt : [args.opt];
+        const nodeArgs = opts.filter(function(opt) {
+          return typeof opt === "string";
+        });
+
+        nodeArgs.push([outputPath, filename].filter(p => p).join("/"));
+
+        serverProcess = spawn("node", nodeArgs);
         serverProcess.stdout.on("data", data => process.stdout.write(data));
         serverProcess.stderr.on("data", logError);
     }
